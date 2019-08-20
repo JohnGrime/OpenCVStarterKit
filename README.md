@@ -11,7 +11,7 @@ Note: although the build script is macOS-oriented, the example programs should w
 * Admin rights on your Mac (to build/install OpenCV)
 * A webcam (if you're using the example programs with a webcam stream)
 
-I'm assuming you're using the default macOS command line setup (Terminal.app with bash), but the scripts etc should be portable with fairly minimal changes.
+The scripts assume the default macOS command line setup (Terminal.app with bash), but should be portable with fairly minimal changes.
 
 ## Introduction
 
@@ -23,25 +23,27 @@ The build script will attempt to download and compile the minimal OpenCV librari
 
 ## Important note about security
 
-Apple tightened up security in macOS (sometime around High Sierra?) and placed additional protections on some files and directories in e.g. `/usr/local/`. This can prevent Homebrew successfully running some post-install scripts; in particular, you can find that [pip](https://pip.pypa.io/en/stable/) is not available after installing Python v3 through homebrew, despite being part of the Python3 distribution. As `pip3` is used by our build script, it explicitly grants ownership of `/usr/local/` to the current user to enable `pip3` to be available after Python v3 is installed.
+Apple tightened up security in macOS (around the release of High Sierra?), and placed additional protections on some files and directories in e.g. `/usr/local/`. This can prevent Homebrew running some post-install scripts; in particular, [pip](https://pip.pypa.io/en/stable/) may not be available after installing Python3, despite `pip3` being a standard Python3 component. As `pip3` is used by the build script, it explicitly grants ownership of `/usr/local/` to the current user to enable `pip3` to be available when Python3 is installed.
 
-One alternative approach is to install the `pip` functionality through python itself; this is available in the build script by changing the `pip_install_option` variable. See the build script itself for more details.
+Another approach is installing `pip` functionality using python itself; this is specified in the build script by changing the `pip_install_option` variable (see the script itself for more details).
 
-The tightened security also manifests as macOS prompting the user for permission before allowing programs to access the system webcam. If the example C++ program cannot open the webcam at runtime, one potential reason is that macOS has not granted webcam permissions to command-line programs; unfortunately, simply running the C++ example program doesn't seem to make macOS prompt the user to allow webcam access! If you're having problems of this nature, try running the example Python script - for some reason, the Python script seems to trigger an access prompt even if the C++ example program doesn't. After you accept that access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
+Tightened security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, one potential reason is that macOS has not granted webcam permissions to command-line programs. Unfortunately, simply running the C++ example program doesn't seem to trigger a prompt to allow webcam access! If you're having problems of this nature, try running the example Python script; for some reason, the Python script seems to trigger an access prompt even if the C++ example program doesn't. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
 
 ## OpenCV build instructions
 
-Simply copy the `build_opencv_macos.sh` script to wherever you'd like the OpenCV source code directories to be. I typically put them in my Desktop directory.
+Simply copy the `build_opencv_macos.sh` script to wherever you'd like the OpenCV source code directories to be (I typically put them in `~/Desktop`).
 
-Next, take a quick look at the script; you should see a set of options at the start of the file (`do_`...) and an `OpenCV_version` variable to specify which version of OpenCV the script will try to install (default: `4.1.1`). The script is then divided into several sections, with each section dealing with a different aspect of the process.
+Next, take a quick look at the script; you should see a set of options at the start of the file (`do_`...) and an `OpenCV_version` variable to specify which version of OpenCV you'd like to install (default: `4.1.1`). The script is then divided into several sections, with each section handling a different part of the process.
 
-If everything looks acceptable, run the script from the directory in which you would like the OpenCV source code to be placed:
+If everything looks acceptable, run the script in the directory you'd like the OpenCV source code to be placed:
 
 	john$ ./build_opencv_macos.sh
 
-... and prepare to enter some basic confirmations and admin passowrds when prompted. The whole process (get support tools, download OpenCV source code then configure, build, and install) should take around 15 minutes.
+... and prepare to enter some basic confirmations and the admin password when prompted. The whole process (get support tools, download OpenCV source, configure, build, and install) should take around 15 minutes.
 
-After the script finishes, you should have a directory containing the source code of the core OpenCV libraries and extra modules, with the build results inside a directory called `build` in the main OpenCV source directory. My final directory structure looks like this:
+There will also be some additions to the `/usr/local/` directory.
+
+After the script finishes, you should have a directory containing the source code of the core OpenCV libraries and extra modules, with build results inside `build/` in the main OpenCV source directory. My final directory structure looks like this:
 
 	OpenCV-4.1.1/
 	|-- opencv-4.1.1.zip
@@ -52,11 +54,13 @@ After the script finishes, you should have a directory containing the source cod
 	|-- opencv_contrib-4.1.1/
 	|   |-- ... etc ...
 
-The build script adds a few environment variables to the shell profile file you specified (default: `~/.bash_profile`), and so if you want to try the example programs immediately after install you can either `source ~/.bash_profile` or open a new Terminal window (as the newly opened shell will automatically parse `~/.bash_profile`).
+The build script adds a few environment variables to the specified shell profile (default: `~/.bash_profile`), and so to try the example programs immediately you can either `source ~/.bash_profile` or open a new Terminal window (as the newly opened shell will automatically parse `~/.bash_profile`).
 
 ## Example programs
 
-Included in this repository are two example programs (with essentially identical functionality) written in C++ and Python. The programs:
+Included in this repository are two example programs (C++ and Python) with essentially identical functionality.
+
+The programs:
 
 1. Read an image file of interest, and then ...
 2. Attempt to identify that image in either another image file or in a live video stream from the user's webcam.
