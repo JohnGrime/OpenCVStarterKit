@@ -13,18 +13,7 @@
 # a prompt, after which you can also run the C++ executable without issues.
 #
 
-workdir=$(pwd)
-
-profile_file="${HOME}/.bash_profile"
-
-OpenCV_version="4.1.1"
-
-OpenCV_dir="${workdir}/OpenCV-${OpenCV_version}"
-OpenCV_source_dir="${OpenCV_dir}/opencv-${OpenCV_version}"
-OpenCV_contrib_dir="${OpenCV_dir}/opencv_contrib-${OpenCV_version}"
-
-VirtualEnvs_dir=".virtualenvs"
-
+# Options to control what the script does; comment options out if/as appropriate
 do_homebrew_install="yes"
 do_pip_install="yes"
 do_misc_install="yes"
@@ -32,6 +21,21 @@ do_source_install="yes"
 do_build="yes"
 do_install="yes"
 do_symlink="yes"
+
+# Choose your desired OpenCV version, and a name for the Python virtual environments directory
+OpenCV_version="4.1.1"
+VirtualEnvs_dir=".virtualenvs"
+
+# To which profile script should we add any required path setup etc?
+profile_file="${HOME}/.bash_profile"
+
+# Some default directory names
+OpenCV_dir="${workdir}/OpenCV-${OpenCV_version}"
+OpenCV_source_dir="${OpenCV_dir}/opencv-${OpenCV_version}"
+OpenCV_contrib_dir="${OpenCV_dir}/opencv_contrib-${OpenCV_version}"
+
+# The directory from which this script was run
+workdir=$(pwd)
 
 # ---------------------------------------------------------------
 # 1. Install Homebrew ( https://brew.sh/ ) and ensure up-to-date:
@@ -49,7 +53,11 @@ then
 	# Homebrew website suggests this as a removal command ( https://docs.brew.sh/FAQ ):
 	# ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
 
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	if [[ $(which brew) == "" ]]
+	then
+		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	fi
+
 	brew update
 fi
 
