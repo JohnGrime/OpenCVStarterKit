@@ -27,7 +27,7 @@ Apple tightened up security in macOS with the release of El Capitan, and placed 
 
 Another approach is to install `pip3` using python itself; this is specified in the build script by changing the `pip_install_option` variable (see the script itself for more details).
 
-Increased security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, access to the webcam may not have been granted to command-line programs. If you're having problems of this nature, try running the example Python script - it seems to trigger an access prompt even when the C++ example does not. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
+Increased security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, access to the webcam may not have been granted to command-line programs. If you're having problems of this nature, try running the example Python script - it seems to trigger an access prompt even when the C++ example does not. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. __You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`__.
 
 ## OpenCV build instructions
 
@@ -58,14 +58,12 @@ The build script adds a few environment variables to the specified shell profile
 
 ## Example programs
 
-Included in this repository are two example programs (C++ and Python) with essentially identical functionality.
-
-The programs:
+Included in this repository are two example programs (C++ and Python) with essentially identical functionality:
 
 1. Read an image file of interest, and then ...
-2. Attempt to identify that image in either another image file or in a live video stream from the user's webcam.
+2. Attempt to identify that image in either: a) another image file, or b) live video from the webcam.
 
-_Please see the note about webcam access for command-line programs in the section `Important note about security`!_
+__Please see the note about webcam access for command-line programs in the section `Important note about security`!__
 
 On the assumption OpenCV built and installed successfully, we may launch the Python example program in the virtual Python environment `cv` that was set up by the build script:
 
@@ -91,8 +89,8 @@ If all is well, we should see some user guidelines printed:
 	  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')
 	  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')
 
-	The 'in' parameter can be decorated with a resize value for the data, e.g.: in=webcam:0.5,
-	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no resizing will be performed).
+	The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,
+	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).
 
 To compile the C++ example, we need to specify the location of our OpenCV headers and which OpenCV libraries we'll be using, e.g.:
 
