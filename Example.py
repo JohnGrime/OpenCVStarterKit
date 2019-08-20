@@ -133,8 +133,8 @@ def printUsage(progname):
     print("  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')")
     print("  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')")
     print()
-    print("The 'in' parameter can be decorated with a resize value for the data, e.g.: in=webcam:0.5,")
-    print("in=mypic.png:1.5. The default resize value is 1.0 (i.e., no resizing will be performed).")
+    print("The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,")
+    print("in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).")
     print()
 
     sys.exit(-1);

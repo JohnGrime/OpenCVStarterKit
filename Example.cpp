@@ -6,6 +6,8 @@ they are patent encumbered. ORB is standard with OpenCV, and is free for all use
 
 Author: John Grime, The University of Oklahoma.
 
+Example compilation:
+
 g++ \
 -I/usr/local/include/opencv4 \
 -lopencv_core -lopencv_highgui -lopencv_imgproc \
@@ -100,8 +102,8 @@ void printUsage( const char* progname )
     cout << "  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')" << endl;
     cout << "  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')" << endl;
     cout << endl;
-    cout << "The 'in' parameter can be decorated with a resize value for the data, e.g.: in=webcam:0.5," << endl;
-    cout << "in=mypic.png:1.5. The default resize value is 1.0 (i.e., no resizing will be performed)." << endl;
+    cout << "The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5," << endl;
+    cout << "in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed)." << endl;
     cout << endl;
 
     exit(-1);

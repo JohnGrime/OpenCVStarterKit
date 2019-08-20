@@ -98,26 +98,8 @@ To compile the C++ example, we need to specify the location of our OpenCV header
 
 	john$ g++ -I/usr/local/include/opencv4 -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio -lopencv_calib3d -lopencv_features2d -lopencv_xfeatures2d -std=c++11 -Wall -Wextra -pedantic -O2 Example.cpp
 
-Note: We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script:
+We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script.
 
-	john$ ./a.out
+## Notes
 
-	Usage : ./a.out find=path [in=path] [with=x] [superpose=x] [min=N] [every=N]
-
-	Where:
-
-	  find : path to image to detect
-	  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)
-	  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)
-	  superpose : OPTIONAL path to image to superpose onto matched regional
-	  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)
-	  every: OPTIONAL run processing every N frames (default: 1)
-
-	Notes:
-
-	The SURF and ORB algorithms can be accompanied with algorithm-specific data;
-	  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')
-	  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')
-
-	The 'in' parameter can be decorated with a resize value for the data, e.g.: in=webcam:0.5,
-	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no resizing will be performed).
+* The ORB feature detector does not perform well with OpenCV's default number of features (400). I find boosting the ORB feature count gives far better results in most cases (e.g., `with=orb:2000`)
