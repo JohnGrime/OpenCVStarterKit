@@ -153,9 +153,12 @@ then
 	# Add some lines to profile file so we can use virtual Python environments:
 
 	echo ""                                                       >> ${profile_file}
+	echo "########### Added by OpenCV build script! ###########"  >> ${profile_file}
 	echo "export WORKON_HOME=$HOME/${VirtualEnvs_dir}"            >> ${profile_file}
 	echo "export VIRTUALENVWRAPPER_PYTHON=/usr/local/bin/python3" >> ${profile_file}
 	echo "source /usr/local/bin/virtualenvwrapper.sh"             >> ${profile_file}
+	echo "#####################################################"  >> ${profile_file}
+	echo ""                                                       >> ${profile_file}
 
 	# Ensure new environment settings are active in the current shell:
 

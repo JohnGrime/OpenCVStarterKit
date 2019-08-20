@@ -23,11 +23,11 @@ The build script will attempt to download and compile the minimal OpenCV librari
 
 ## Important note about security
 
-Apple tightened up security in macOS (around the release of El Capitan?), and placed additional protections on some files and directories in e.g. `/usr/`. This can prevent Homebrew running some post-install scripts; in particular, [pip](https://pip.pypa.io/en/stable/) may not be available after installing Python3, despite `pip3` being a standard Python3 component. As `pip3` is used by the build script, it explicitly grants ownership of `/usr/local/` to the current user to enable `pip3` to be available when Python3 is installed.
+Apple tightened up security in macOS with the release of El Capitan, and placed additional protections on some files and directories in e.g. `/usr/`. This can prevent Homebrew running post-install scripts; in particular, [pip](https://pip.pypa.io/en/stable/) may not be available after installing Python3, despite `pip3` being a standard Python3 component. As `pip3` is used by the build script, explicit ownership of `/usr/local/` is granted to the current user to ensure `pip3` is available after Python3 is installed.
 
-Another approach is installing `pip` functionality using python itself; this is specified in the build script by changing the `pip_install_option` variable (see the script itself for more details).
+Another approach is to install `pip3` using python itself; this is specified in the build script by changing the `pip_install_option` variable (see the script itself for more details).
 
-Tightened security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, one potential reason is that macOS has not granted webcam permissions to command-line programs. Unfortunately, simply running the C++ example program doesn't seem to trigger a prompt to allow webcam access! If you're having problems of this nature, try running the example Python script - it seems to trigger an access prompt even if the C++ example doesn't. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
+Increased security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, access to the webcam may not have been granted to command-line programs. If you're having problems of this nature, try running the example Python script - it seems to trigger an access prompt even when the C++ example does not. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
 
 ## OpenCV build instructions
 
@@ -41,8 +41,6 @@ If everything looks acceptable, run the script in the directory you'd like the O
 
 ... and prepare to enter some basic confirmations and the admin password when prompted. The whole process (get support tools, download OpenCV source, configure, build, and install) should take around 15 minutes.
 
-There will also be some additions to the `/usr/local/` directory.
-
 After the script finishes, you should have a directory containing the source code of the core OpenCV libraries and extra modules, with build results inside `build/` in the main OpenCV source directory. My final directory structure looks like this:
 
 	OpenCV-4.1.1/
@@ -53,6 +51,8 @@ After the script finishes, you should have a directory containing the source cod
 	|-- opencv_contrib-4.1.1.zip
 	|-- opencv_contrib-4.1.1/
 	|   |-- ... etc ...
+
+There will also be some additions to the `/usr/local/` directory.
 
 The build script adds a few environment variables to the specified shell profile (default: `~/.bash_profile`), and so to try the example programs immediately you can either `source ~/.bash_profile` or open a new Terminal window (as the newly opened shell will automatically parse `~/.bash_profile`).
 
