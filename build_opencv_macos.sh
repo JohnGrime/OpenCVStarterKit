@@ -1,13 +1,12 @@
 #!/usr/bin/env bash
 
 #
-# This script assumes the user has admin rights. High Sierra (macOS 10.13) and later tightened
-# up OS security:
+# This script assumes the user has admin rights. El Capitan (macOS 10.11) tightened up scurity:
 #
 # 1. Homebrew seems to have problems modifying with the /usr/local directory. This is addressed
-# in this script by explicitly setting access rights.
+# in this script by explicitly setting access rights (although this behaviour can be changed).
 #
-# 2. The camera can't be accessed from the terminal using OpenCV in Python or C++ until you
+# 2. The webcam can't be accessed from the terminal using OpenCV in Python or C++ until you
 # accept a system prompt to grant access. Simply running a C++ executable does not seem to
 # generate a prompt; running a Python script that accesses the camera via OpenCV *does* generate
 # a prompt, after which you can also run the C++ executable without issues.
@@ -67,7 +66,7 @@ fi
 # --------------------------------
 
 #
-# Homebrew on macOS High Sierra (10.13) and above have problems with /usr/local/
+# Homebrew on macOS El Capitan (10.11) and above has problems with /usr/local/
 # which breaks some post-install scripts for python; this manifests as e.g.
 # no "pip3" command (though "python3 -m pip ..." works).
 #

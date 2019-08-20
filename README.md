@@ -23,11 +23,11 @@ The build script will attempt to download and compile the minimal OpenCV librari
 
 ## Important note about security
 
-Apple tightened up security in macOS (around the release of High Sierra?), and placed additional protections on some files and directories in e.g. `/usr/local/`. This can prevent Homebrew running some post-install scripts; in particular, [pip](https://pip.pypa.io/en/stable/) may not be available after installing Python3, despite `pip3` being a standard Python3 component. As `pip3` is used by the build script, it explicitly grants ownership of `/usr/local/` to the current user to enable `pip3` to be available when Python3 is installed.
+Apple tightened up security in macOS (around the release of El Capitan?), and placed additional protections on some files and directories in e.g. `/usr/`. This can prevent Homebrew running some post-install scripts; in particular, [pip](https://pip.pypa.io/en/stable/) may not be available after installing Python3, despite `pip3` being a standard Python3 component. As `pip3` is used by the build script, it explicitly grants ownership of `/usr/local/` to the current user to enable `pip3` to be available when Python3 is installed.
 
 Another approach is installing `pip` functionality using python itself; this is specified in the build script by changing the `pip_install_option` variable (see the script itself for more details).
 
-Tightened security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, one potential reason is that macOS has not granted webcam permissions to command-line programs. Unfortunately, simply running the C++ example program doesn't seem to trigger a prompt to allow webcam access! If you're having problems of this nature, try running the example Python script; for some reason, the Python script seems to trigger an access prompt even if the C++ example program doesn't. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
+Tightened security also requires macOS to prompt the user for permission the first time a program tries to access the system webcam. If the example C++ program cannot open the webcam at runtime, one potential reason is that macOS has not granted webcam permissions to command-line programs. Unfortunately, simply running the C++ example program doesn't seem to trigger a prompt to allow webcam access! If you're having problems of this nature, try running the example Python script - it seems to trigger an access prompt even if the C++ example doesn't. After you allow the access request, the C++ example (and indeed, all other command-line programs) should be able to access the webcam. You can disable this access through `System Preferences -> Security & Privacy -> Privacy -> Camera`.
 
 ## OpenCV build instructions
 
@@ -67,7 +67,7 @@ The programs:
 
 _Please see the note about webcam access for command-line programs in the section `Important note about security`!_
 
-On the assumption OpenCV built and installed successfully, we may launch the Python example program using the `cv` virtual Python environment set up in the build script:
+On the assumption OpenCV built and installed successfully, we may launch the Python example program in the virtual Python environment `cv` that was set up by the build script:
 
 	john$ workon cv
 	(cv) john$ python Example.py
@@ -98,7 +98,7 @@ To compile the C++ example, we need to specify the location of our OpenCV header
 
 	john$ g++ -I/usr/local/include/opencv4 -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio -lopencv_calib3d -lopencv_features2d -lopencv_xfeatures2d -std=c++11 -Wall -Wextra -pedantic -O2 Example.cpp
 
-This is obviously a little verbose. Nontheless, running the resultant `a.out` file should give you the same user guide as the Python script:
+Note: We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script:
 
 	john$ ./a.out
 
@@ -121,5 +121,3 @@ This is obviously a little verbose. Nontheless, running the resultant `a.out` fi
 
 	The 'in' parameter can be decorated with a resize value for the data, e.g.: in=webcam:0.5,
 	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no resizing will be performed).
-
-Note: We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example.

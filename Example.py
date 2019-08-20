@@ -197,8 +197,8 @@ img_ref = loadImage(params["find"][0], useGrayscale)
 img_super = None
 if params["superpose"][0] != "":
     img_super = loadImage(params["superpose"][0], useGrayscale)
-    w,h = img_ref.shape[0:2]
-    img_super = cv.resize( img_super, (h,w), interpolation=cv.INTER_AREA )
+    rows,cols = img_ref.shape[0:2]
+    img_super = cv.resize( img_super, (cols,rows), interpolation=cv.INTER_AREA )
 
 #
 # Create detector and apporpriate matcher; SIFT, SURF, or ORB.
