@@ -108,7 +108,7 @@ Running the program again, this time using a printout of a larger region of the 
 
 Example output from the program may look like this:
 
-	(cv) john$$ python Example.py find=../Levine/find.500.png with=orb:2000 min=10
+	(cv) john$ python Example.py find=../Levine/find.500.png with=orb:2000 min=10
 	Parameters:
 	  find : ../Levine/find.500.png
 	  in : webcam
