@@ -499,7 +499,7 @@ int main( int argc, char* argv[] )
 
 int main()
 {
-    cout << "This tutorial code needs the xfeatures2d contrib module to be run." << endl;
+    cout << "This code requires OpenCV contribution modules to run." << endl;
     return 0;
 }
 
