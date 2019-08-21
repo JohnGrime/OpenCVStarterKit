@@ -88,7 +88,7 @@ If all is well, we should see some user guidelines printed:
 	  - for ORB, this is the number of features e.g. 'using=ORB:500' (default value: 500')
 
 	The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,
-	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).
+	in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed).
 
 To compile the C++ example, we need to specify the location of our OpenCV headers and which OpenCV libraries we'll be using, e.g.:
 

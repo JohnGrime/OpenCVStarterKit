@@ -134,7 +134,7 @@ def printUsage(progname):
     print("  - for ORB, this is the number of features e.g. 'using=ORB:500' (default value: 500')")
     print()
     print("The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,")
-    print("in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).")
+    print("in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed).")
     print()
 
     sys.exit(-1);
