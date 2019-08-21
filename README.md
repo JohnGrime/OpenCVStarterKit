@@ -96,7 +96,7 @@ To compile the C++ example, we need to specify the location of our OpenCV header
 
 We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script.
 
-An example screenshot of the running program is shown below. In this example, we attempt to recognize an image of a specific region of a wall from the [Monte Alban](https://montealban.oucreate.com/) archaeological site (images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)).
+An example screenshot of the running program is shown below. In this example, we attempt to recognize an image of a specific region of a wall from the [Monte Alban](https://montealban.oucreate.com/) archaeological site (all images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)).
 
 ![Figure 1](screenshot.png)
 
