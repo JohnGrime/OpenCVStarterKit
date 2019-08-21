@@ -12,15 +12,6 @@
 # a prompt, after which you can also run the C++ executable without issues.
 #
 
-# Options to control what the script does; comment options out if/as appropriate
-do_homebrew_install="yes"
-do_pip_install="yes"
-do_misc_install="yes"
-do_source_install="yes"
-do_build="yes"
-do_install="yes"
-do_symlink="yes"
-
 # Choose your desired OpenCV version, and a name for the Python virtual environments directory
 OpenCV_version="4.1.1"
 VirtualEnvs_dir=".virtualenvs"
@@ -34,72 +25,71 @@ workdir=$(pwd)
 # Some default directory names
 OpenCV_dir="${workdir}/OpenCV-${OpenCV_version}"
 OpenCV_source_dir="${OpenCV_dir}/opencv-${OpenCV_version}"
+OpenCV_build_dir="${OpenCV_dir}/opencv-${OpenCV_version}/build"
 OpenCV_contrib_dir="${OpenCV_dir}/opencv_contrib-${OpenCV_version}"
+
+
+# ---------------------------------------------------------
+# 0. main() runs the separate parts of the install process;
+#    comment stages out if/as appropriate.
+# ---------------------------------------------------------
+function main
+{
+	install_homebrew || print_and_exit "Unable to install Homebrew"
+	install_python   || print_and_exit "Unable to install Python3"
+	install_ant      || print_and_exit "Unable to install Ant"
+	install_misc     || print_and_exit "Unable to install misc. items"
+	retrieve_source  || print_and_exit "Unable to retrieve OpenCV source code"
+	build_source     || print_and_exit "Unable to build OpenCV source code"
+	install_opencv   || print_and_exit "Unable to install OpenCV"
+}
+
 
 # ---------------------------------------------------------------
 # 1. Install Homebrew ( https://brew.sh/ ) and ensure up-to-date:
 # ---------------------------------------------------------------
-
-if [[ "${do_homebrew_install}" == "yes" ]]
-then
-
-	echo ""
-	echo "#"
-	echo "# Installing Homebrew ..."
-	echo "#"
-	echo ""
+function install_homebrew
+{
+	print_header "Installing homebrew ..."
+	check_installed "brew" && return 0
+	
+	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+	brew update
 
 	# Homebrew website suggests this as a removal command ( https://docs.brew.sh/FAQ ):
 	# ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/uninstall)"
-
-	if [[ $(which brew) == "" ]]
-	then
-		/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	fi
-
-	brew update
-fi
+}
 
 
 # --------------------------------
 # 2. Install Python3 via Homebrew:
 # --------------------------------
+function install_python
+{
+	#
+	# Homebrew on macOS El Capitan (10.11) and above has problems with /usr/local/
+	# which breaks some post-install scripts for python; this manifests as e.g.
+	# no "pip3" command (though "python3 -m pip ..." works).
+	#
+	# We therefore have multiple approaches:
+	#
+	# 1. Ensure certain required directories are created, and set access rights
+	#    that allow Homebrew to manipulate them, before installing python
+	#
+	# 2. Install pip explicitly after python installed
+	#
+	# In any case, "brew install python" should result in the availability of
+	# both python2 (>= 2.7.1) and python3 (>= 3.7.4). TensorFlow etc are now
+	# compatible with python v3.7, so don't worry about needing v3.6 etc.
+	#
+	# Here, I'm using approach #1.
+	#
 
-#
-# Homebrew on macOS El Capitan (10.11) and above has problems with /usr/local/
-# which breaks some post-install scripts for python; this manifests as e.g.
-# no "pip3" command (though "python3 -m pip ..." works).
-#
-# We therefore have multiple approaches:
-#
-# 1. Ensure certain required directories are created, and set access rights
-#    that allow Homebrew to manipulate them, before installing python
-#
-# 2. Install pip explicitly after python installed
-#
-# In any case, "brew install python" should result in the availability of
-# both python2 (>= 2.7.1) and python3 (>= 3.7.4). TensorFlow etc are now
-# compatible with python v3.7, so don't worry about needing v3.6 etc.
-#
-# Here, I'm using approach #1.
-#
+	print_header "Installing python3 ..."
+	check_installed "pip3" && return 0
+	check_installed "brew" || print_and_exit "Homebrew not found"
 
-pip_install_option="1"
-
-if [[ "${do_pip_install}" == "yes" ]]
-then
-
-	echo ""
-	echo "#"
-	echo "# Installing pip3 ..."
-	echo "#"
-	echo ""
-
-	if [[ $(which brew) == "" ]]
-	then
-		echo "PROBLEM: No brew command found - did the Homebrew install work?"
-		exit
-	fi
+	pip_install_option="1"
 
 	if [[ "${pip_install_option}" == "1" ]]
 	then
@@ -115,34 +105,30 @@ then
 		sudo python3 get-pip.py
 		sudo rm -rf get-pip.py ~/.cache/pip
 	fi
+}
 
-fi
+
+# -------------------------------------------------------------------------------
+# 3. Install ant, which should enable OpenCV build process to build Java wrappers
+# -------------------------------------------------------------------------------
+function install_ant
+{
+	print_header "Installing Ant ..."
+	check_installed "ant" && return 0
+	check_installed "brew" || print_and_exit "Homebrew not found"
+
+	brew install ant
+}
 
 
 # ------------------------------------------------------------
 # 3. Install misc prerequisites for building and using OpenCV:
 # ------------------------------------------------------------
-
-if [[ "${do_misc_install}" == "yes" ]]
-then
-
-	echo ""
-	echo "#"
-	echo "# Installing misc. items ..."
-	echo "#"
-	echo ""
-
-	if [[ $(which brew) == "" ]]
-	then
-		echo "PROBLEM: No brew command found - did the Homebrew install work?"
-		exit
-	fi
-
-	if [[ $(which pip3) == "" ]]
-	then
-		echo "PROBLEM: No pip3 command found - did the Python3 install work?"
-		exit
-	fi
+function install_misc
+{
+	print_header "Installing misc. items ..."
+	check_installed "brew" || print_and_exit "Homebrew not found"
+	check_installed "pip3" || print_and_exit "pip3 not found"
 
 	brew install cmake
 	brew install jpeg libpng libtiff openexr
@@ -162,6 +148,7 @@ then
 
 	# Ensure new environment settings are active in the current shell:
 
+	[[ -f "${profile_file}" ]] || print_and_exit "${profile_file} not found"
 	source ${profile_file}
 
 	# Create a virtual python environment called "cv", ensure numpy is intalled in it.
@@ -176,25 +163,21 @@ then
 
 	workon cv
 	sudo pip3 install numpy
+}
 
-fi
 
+# --------------------------------------------
+# 4. Download/unpack OpenCV and contributions:
+# --------------------------------------------
+function retrieve_source
+{
+	print_header "Retrieving OpenCV (and contributions) source code ..."
 
-# --------------------------------
-# 4. Get OpenCV and contributions:
-# --------------------------------
-
-if [[ "${do_source_install}" == "yes" ]]
-then
+	check_installed "virtualenvwrapper.sh" || print_and_exit "'workon' command not found"
+	[[ -f "${profile_file}" ]] || print_and_exit "'${profile_file}' file not found"
 
 	source ${profile_file}
 	workon cv
-
-	echo ""
-	echo "#"
-	echo "# Installing source code for OpenCV and contributions ..."
-	echo "#"
-	echo ""
 
 	mkdir -p "${OpenCV_dir}"
 
@@ -207,46 +190,27 @@ then
 	unzip "opencv_contrib-${OpenCV_version}.zip"
 
 	cd ${workdir}
-
-fi
+}
 
 
 # ----------------------------------
 # 5. Build OpenCV and contributions:
 # ----------------------------------
+function build_source
+{
+	print_header "Building OpenCV (and contributions) ..."
 
-if [[ "${do_build}" == "yes" ]]
-then
+	check_installed "cmake" || print_and_exit "'cmake' command not found"
+	check_installed "virtualenvwrapper.sh" || print_and_exit "'workon' command not found"
+	[[ -f "${profile_file}" ]] || print_and_exit "'${profile_file}' file not found"
+	[[ -d "${OpenCV_source_dir}" ]] || print_and_exit "OpenCV source directory ('${OpenCV_source_dir}') not found"
+	[[ -d "${OpenCV_contrib_dir}" ]] || print_and_exit "OpenCV contrib source directory ('${OpenCV_contrib_dir}') not found"
 
 	source ${profile_file}
 	workon cv
 
-	echo ""
-	echo "#"
-	echo "# Building OpenCV and contributions ..."
-	echo "#"
-	echo ""
-
-	if [[ ! -d "${OpenCV_source_dir}" ]]
-	then
-		echo "No OpenCV source dir; expected '${OpenCV_source_dir}'"
-		exit
-	fi
-
-	if [[ ! -d "${OpenCV_contrib_dir}" ]]
-	then
-		echo "No OpenCV contrib source dir; expected '${OpenCV_contrib_dir}'"
-		exit
-	fi
-
-	cd ${OpenCV_source_dir}
-
-	if [[ ! -d build ]]
-	then
-		mkdir build
-	fi
-
-	cd build
+	mkdir ${OpenCV_build_dir}
+	cd ${OpenCV_build_dir}
 
 	#
 	# Get version'd python library file path.
@@ -293,60 +257,34 @@ then
 	make -j 8
 
 	cd ${workdir}
-
-fi
+}
 
 
 # ------------------------------------
 # 6. Install OpenCV and contributions:
 # ------------------------------------
+function install_opencv
+{
+	print_header "Installing OpenCV (and contributions) ..."
 
-if [[ "${do_install}" == "yes" ]]
-then
+	check_installed "virtualenvwrapper.sh" || print_and_exit "'workon' command not found"
+	[[ -f "${profile_file}" ]] || print_and_exit "'${profile_file}' file not found"
+	[[ -d "${OpenCV_build_dir}" ]] || print_and_exit "Build directory ('${OpenCV_build_dir}') not found"
 
 	source ${profile_file}
 	workon cv
 
-	echo ""
-	echo "#"
-	echo "# Installing OpenCV and contributions ..."
-	echo "#"
-	echo ""
-
-	build_dir="${OpenCV_source_dir}/build"
-
-	if [[ ! -d "${build_dir}" ]]
-	then
-		echo "No OpenCV build dir; expected '${build_dir}'"
-		exit
-	fi
-
-	cd "${build_dir}"
+	cd ${OpenCV_build_dir}
 
 	sudo make install
 
 	cd ${workdir}
 
 	# Ensure we can find our OpenCV on the Python path! Otherwise, we may have import problems.
-	echo "export PYTHONPATH=\${PYTHONPATH}:${build_dir}/python_loader" >> ${profile_file}
 
-fi
+	echo "export PYTHONPATH=\${PYTHONPATH}:${OpenCV_build_dir}/python_loader" >> ${profile_file}
 
-# -------------------------------------------
-# 7. Symlink so "import cv2" works in python:
-# -------------------------------------------
-
-if [[ "${do_symlink}" == "yes" ]]
-then
-
-	source ${profile_file}
-	workon cv
-
-	echo ""
-	echo "#"
-	echo "# Symlinking cv2 object ..."
-	echo "#"
-	echo ""
+	# Add symlink, so "import cv2" works in python:
 
 	py_maj=$(python --version | awk '{split($2,t,"."); print t[1]}')
 	py_min=$(python --version | awk '{split($2,t,"."); print t[2]}')
@@ -357,5 +295,32 @@ then
 	echo "Adding symbolic link: ln -s ${src} ${dst}"
 
 	ln -s ${src} ${dst}
+}
 
-fi
+# ------------------------
+# Misc. utility functions:
+# ------------------------
+function print_header
+{
+	echo "" ; echo "#" ; echo "# ${1} ..." ; echo "#" ; echo ""
+}
+
+function print_and_exit
+{
+	echo "!" ; echo "! Exiting because: ${1}" ; echo "!"
+	exit
+}
+
+function check_installed
+{
+	result=$(which ${1})
+	[[ ${result} == "" ]] && return 1
+	echo "Command '${1}' appears to be present (${result})."
+}
+
+
+# -------------------------------------------------
+# Run main(), now the whole script has been parsed!
+# -------------------------------------------------
+
+main "$@" ; exit

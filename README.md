@@ -31,7 +31,7 @@ Increased security also requires macOS to prompt the user for permission the fir
 
 Simply copy the `build_opencv_macos.sh` script to wherever you'd like the OpenCV source code directories to be (I typically put them in `~/Desktop`).
 
-Next, take a quick look at the script; you should see a set of options at the start of the file (`do_`...) and an `OpenCV_version` variable to specify which version of OpenCV you'd like to install (default: `4.1.1`). The script is then divided into several sections, with each section handling a different part of the process.
+Next, take a quick look at the script; you should see a set of options at the start of the file, including an `OpenCV_version` variable to specify which version of OpenCV you'd like to install (default: `4.1.1`). There follows a `main` function that calls the various parts of the preparation and installation process.
 
 If everything looks acceptable, run the script in the directory you'd like the OpenCV source code to be placed:
 
