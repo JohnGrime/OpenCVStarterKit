@@ -77,7 +77,7 @@ If all is well, we should see some user guidelines printed:
 	  find : path to image to detect
 	  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)
 	  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)
-	  superpose : OPTIONAL path to image to superpose onto matched regional
+	  superpose : OPTIONAL path to image to superpose onto matched region
 	  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)
 	  every: OPTIONAL run processing every N frames (default: 1)
 
@@ -96,11 +96,16 @@ To compile the C++ example, we need to specify the location of our OpenCV header
 
 We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script.
 
-An example screenshot of the running program is shown below. In this example, we attempt to recognize a specific region of a wall from the Monte Alban archaeological site (images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)). 
+An example screenshot of the running program is shown below. In this example, we attempt to recognize an image of a specific region of a wall from the Monte Alban archaeological site (images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)).
 
 ![Figure 1](screenshot.png)
 
-The image passed using the `find` parameter is shown on the left, the current webcam feed is shown on the right, and any recognized region is outlined in blue. Futhermore, we have used the `superpose` parameter to pass in an enhanced trace of the inscription present on the large stone; this trace is thus highlighted in the webcam feed in white.
+The image passed using the `find` parameter is shown on the left, the current webcam feed is shown on the right, and any recognized region is outlined in blue. Futhermore, we have used the `superpose` parameter to pass in an enhanced trace of the inscription present on the large stone; this trace is thus highlighted in white on top of the printout of the image.
+
+Running the program again, this time using a printout of a larger region of the wall, we again observe that the specific region of interest is correctly identified in the webcam feed (see below).
+
+![Figure 2](screenshot2.png)
+
 
 ## Notes
 

@@ -123,7 +123,7 @@ def printUsage(progname):
     print("  find : path to image to detect")
     print("  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)")
     print("  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)")
-    print("  superpose : OPTIONAL path to image to superpose onto matched regional")
+    print("  superpose : OPTIONAL path to image to superpose onto matched region")
     print("  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)")
     print("  every: OPTIONAL run processing every N frames (default: 1)")
     print()

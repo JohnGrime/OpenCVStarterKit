@@ -92,7 +92,7 @@ void printUsage( const char* progname )
     cout << "  find : path to image to detect" << endl;
     cout << "  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)" << endl;
     cout << "  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)" << endl;
-    cout << "  superpose : OPTIONAL path to image to superpose onto matched regional" << endl;
+    cout << "  superpose : OPTIONAL path to image to superpose onto matched region" << endl;
     cout << "  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)" << endl;
     cout << "  every: OPTIONAL run processing every N frames (default: 1)" << endl;
     cout << endl;
