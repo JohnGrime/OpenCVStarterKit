@@ -28,13 +28,13 @@ VirtualEnvs_dir=".virtualenvs"
 # To which profile script should we add any required path setup etc?
 profile_file="${HOME}/.bash_profile"
 
+# The directory from which this script was run
+workdir=$(pwd)
+
 # Some default directory names
 OpenCV_dir="${workdir}/OpenCV-${OpenCV_version}"
 OpenCV_source_dir="${OpenCV_dir}/opencv-${OpenCV_version}"
 OpenCV_contrib_dir="${OpenCV_dir}/opencv_contrib-${OpenCV_version}"
-
-# The directory from which this script was run
-workdir=$(pwd)
 
 # ---------------------------------------------------------------
 # 1. Install Homebrew ( https://brew.sh/ ) and ensure up-to-date:

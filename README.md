@@ -106,6 +106,56 @@ Running the program again, this time using a printout of a larger region of the 
 
 ![Figure 2](screenshot2.png)
 
+Example output from the program may look like this:
+
+	(cv) john$$ python Example.py find=../Levine/find.500.png with=orb:2000 min=10
+	Parameters:
+	  find : ../Levine/find.500.png
+	  in : webcam
+	  with : orb 2000
+	  superpose : 
+	  min : 10
+	  every : 1
+	 12.3 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.3 ms : resize 0 ms : 0 good matches in 1280x720 frame (potential 31.0253 fps)
+	 11.9 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.4 ms : resize 0 ms : 1 good matches in 1280x720 frame (potential 31.5581 fps)
+	 11.1 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.3 ms : resize 0 ms : 0 good matches in 1280x720 frame (potential 30.9432 fps)
+	 11.7 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.3 ms : resize 0 ms : 1 good matches in 1280x720 frame (potential 31.3589 fps)
+	 10.8 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.3 ms : resize 0 ms : 1 good matches in 1280x720 frame (potential 30.997 fps)
+	 10.7 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.5 ms : resize 0 ms : 3 good matches in 1280x720 frame (potential 30.8431 fps)
+	 12.2 fps : detect 14 ms : knn 15 ms : homography 0.72 ms : draw 4.4 ms : resize 0 ms : 76 good matches in 1280x720 frame (potential 29.2887 fps)
+	|    +1.44    +0.11  +426.33 |
+	|    +0.13    +1.34  +123.78 |
+	|    +0.00    +0.00    +1.00 |
+	 11.0 fps : detect 15 ms : knn 15 ms : homography 0.63 ms : draw 5.5 ms : resize 0 ms : 76 good matches in 1280x720 frame (potential 27.7072 fps)
+	|    +1.36    +0.21  +442.00 |
+	|    +0.06    +1.34  +136.74 |
+	|    +0.00    +0.00    +1.00 |
+	 10.8 fps : detect 15 ms : knn 15 ms : homography 0.55 ms : draw 5.6 ms : resize 0 ms : 79 good matches in 1280x720 frame (potential 27.2558 fps)
+	|    +1.33    +0.17  +449.19 |
+	|    +0.06    +1.31  +134.43 |
+	|    +0.00    +0.00    +1.00 |
+	 10.8 fps : detect 15 ms : knn 15 ms : homography 0.53 ms : draw 5.9 ms : resize 0 ms : 93 good matches in 1280x720 frame (potential 27.5384 fps)
+	|    +1.33    +0.20  +445.14 |
+	|    +0.06    +1.33  +134.75 |
+	|    +0.00    +0.00    +1.00 |
+	 10.1 fps : detect 15 ms : knn 15 ms : homography 0.53 ms : draw 6 ms : resize 0 ms : 91 good matches in 1280x720 frame (potential 27.5118 fps)
+	|    +1.29    +0.17  +451.09 |
+	|    +0.05    +1.30  +133.50 |
+	|    +0.00    +0.00    +1.00 |
+	 10.1 fps : detect 15 ms : knn 15 ms : homography 0.55 ms : draw 5.8 ms : resize 0 ms : 90 good matches in 1280x720 frame (potential 27.5087 fps)
+	|    +1.33    +0.22  +446.20 |
+	|    +0.06    +1.33  +131.32 |
+	|    +0.00    +0.00    +1.00 |
+	 11.4 fps : detect 15 ms : knn 15 ms : homography 0.55 ms : draw 5.9 ms : resize 0 ms : 92 good matches in 1280x720 frame (potential 27.5139 fps)
+	|    +1.29    +0.17  +452.07 |
+	|    +0.05    +1.29  +133.70 |
+	|    +0.00    +0.00    +1.00 |
+	 11.3 fps : detect 15 ms : knn 15 ms : homography 0.56 ms : draw 4.4 ms : resize 0 ms : 2 good matches in 1280x720 frame (potential 28.8973 fps)
+	 12.4 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.5 ms : resize 0 ms : 0 good matches in 1280x720 frame (potential 31.0656 fps)
+	 12.7 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.3 ms : resize 0 ms : 5 good matches in 1280x720 frame (potential 30.938 fps)
+	 10.8 fps : detect 14 ms : knn 15 ms : homography 0 ms : draw 3.4 ms : resize 0 ms : 2 good matches in 1280x720 frame (potential 30.5629 fps)
+
+In the output above, the jump in `good matches` (and the listing of homography matrices) occurs when a printout of the `find` image is held up in front of the webcam.
 
 ## Notes
 
