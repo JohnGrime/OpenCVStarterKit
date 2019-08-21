@@ -85,22 +85,22 @@ struct KNNMatcher
 void printUsage( const char* progname )
 {
     cout << endl;
-    cout << "Usage : " << progname << " find=path [in=path] [with=x] [superpose=x] [min=N] [every=N]" << endl;
+    cout << "Usage : " << progname << " find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]" << endl;
     cout << endl;
     cout << "Where:" << endl;
     cout << endl;
-    cout << "  find : path to image to detect" << endl;
-    cout << "  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)" << endl;
-    cout << "  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)" << endl;
+    cout << "  find  : path to image to detect" << endl;
+    cout << "  in    : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)" << endl;
+    cout << "  using : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)" << endl;
     cout << "  superpose : OPTIONAL path to image to superpose onto matched region" << endl;
-    cout << "  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)" << endl;
-    cout << "  every: OPTIONAL run processing every N frames (default: 1)" << endl;
+    cout << "  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)" << endl;
+    cout << "  every : OPTIONAL run processing every N frames (default: 1)" << endl;
     cout << endl;
     cout << "Notes:" << endl;
     cout << endl;
     cout << "The SURF and ORB algorithms can be accompanied with algorithm-specific data;" << endl;
-    cout << "  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')" << endl;
-    cout << "  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')" << endl;
+    cout << "  - for SURF, this is the Hessian tolerance e.g. 'using=SURF:400' (default value: 400')" << endl;
+    cout << "  - for ORB, this is the number of features e.g. 'using=ORB:500' (default value: 500')" << endl;
     cout << endl;
     cout << "The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5," << endl;
     cout << "in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed)." << endl;
@@ -129,7 +129,7 @@ int main( int argc, char* argv[] )
     std::map<std::string,std::vector<std::string>> params {
         { "find",      {""} },
         { "in",        {"webcam"} },
-        { "with",      {"SIFT"} },
+        { "using",      {"SIFT"} },
         { "superpose", {""} },
         { "min",       {"4"} },
         { "every",     {"1"} },
@@ -203,31 +203,31 @@ int main( int argc, char* argv[] )
     //
 
     {
-        const auto& with_info = params["with"];
+        const auto& algo_info = params["using"];
         
-        auto with = with_info[0];
+        auto algo = algo_info[0];
 
-        std::transform( with.begin(), with.end(), with.begin(), [](int x){ return std::tolower(x); } );
+        std::transform( algo.begin(), algo.end(), algo.begin(), [](int x){ return std::tolower(x); } );
 
-        if (with=="sift")
+        if (algo=="sift")
         {
             detector = cv::xfeatures2d::SIFT::create();
             matcher = cv::FlannBasedMatcher::create();
         }
-        else if (with=="surf")
+        else if (algo=="surf")
         {
             int minHessian = 400;
 
-            if (!Util::ToNumberIfExists(with_info,1,minHessian))
+            if (!Util::ToNumberIfExists(algo_info,1,minHessian))
             {
-                cout << "Unable to convert SURF minHessian token '" << with_info[1] << "' into an integer" << endl;
+                cout << "Unable to convert SURF minHessian token '" << algo_info[1] << "' into an integer" << endl;
                 exit(-1);
             }
 
             detector = cv::xfeatures2d::SURF::create( minHessian );
             matcher = cv::FlannBasedMatcher::create();
         }
-        else if(with=="orb")
+        else if(algo=="orb")
         {
             // Default nFeatures is 500, but this tends not to work so well.
             // OpenCV docs indicate NORM_HAMMING should be used with ORB.
@@ -235,9 +235,9 @@ int main( int argc, char* argv[] )
 
             int nFeatures = 500;
 
-            if (!Util::ToNumberIfExists(with_info,1,nFeatures))
+            if (!Util::ToNumberIfExists(algo_info,1,nFeatures))
             {
-                cout << "Unable to convert ORB nFeatures token '" << with_info[1] << "' into an integer" << endl;
+                cout << "Unable to convert ORB nFeatures token '" << algo_info[1] << "' into an integer" << endl;
                 exit(-1);
             }
 
@@ -246,7 +246,7 @@ int main( int argc, char* argv[] )
         }
         else
         {
-            cout << "Unknown recogniser type " << with << endl;
+            cout << "Unknown recogniser type " << algo << endl;
             exit( -1 );
         }
     }

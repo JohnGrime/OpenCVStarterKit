@@ -116,22 +116,22 @@ class StatsSet:
 
 def printUsage(progname):
     print()
-    print("Usage : %s find=path [in=path] [with=x] [superpose=x] [min=N] [every=N]" % (progname) )
+    print("Usage : %s find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]" % (progname) )
     print()
     print("Where:")
     print()
-    print("  find : path to image to detect")
-    print("  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)")
-    print("  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)")
+    print("  find  : path to image to detect")
+    print("  in    : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)")
+    print("  using : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)")
     print("  superpose : OPTIONAL path to image to superpose onto matched region")
-    print("  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)")
-    print("  every: OPTIONAL run processing every N frames (default: 1)")
+    print("  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)")
+    print("  every : OPTIONAL run processing every N frames (default: 1)")
     print()
     print("Notes:")
     print()
     print("The SURF and ORB algorithms can be accompanied with algorithm-specific data;")
-    print("  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')")
-    print("  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')")
+    print("  - for SURF, this is the Hessian tolerance e.g. 'using=SURF:400' (default value: 400')")
+    print("  - for ORB, this is the number of features e.g. 'using=ORB:500' (default value: 500')")
     print()
     print("The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,")
     print("in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).")
@@ -161,7 +161,7 @@ kpd, knn = KeypointsAndDescriptors(), KNNMatcher()
 params = {
     "find":      [""],
     "in":        ["webcam"],
-    "with":      ["SIFT"],
+    "using":     ["SIFT"],
     "superpose": [""],
     "min":       ["4"],
     "every":     ["1"],
@@ -204,7 +204,7 @@ if params["superpose"][0] != "":
 # Create detector and apporpriate matcher; SIFT, SURF, or ORB.
 #
 
-algo_info = params["with"]
+algo_info = params["using"]
 algo_name = algo_info[0].lower()
 
 if (algo_name == "sift"):

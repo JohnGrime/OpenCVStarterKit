@@ -70,22 +70,22 @@ On the assumption OpenCV built and installed successfully, we may launch the Pyt
 
 If all is well, we should see some user guidelines printed:
 
-	Usage : Example.py find=path [in=path] [with=x] [superpose=x] [min=N] [every=N]
+	Usage : Example.py find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]
 
 	Where:
 
-	  find : path to image to detect
-	  in   : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)
-	  with : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)
+	  find  : path to image to detect
+	  in    : OPTIONAL path to image in which to search (default: 'webcam', i.e. use webcam feed)
+	  using : OPTIONAL algorithm to use, one of 'SURF', 'SIFT', or 'ORB' (default: SIFT)
 	  superpose : OPTIONAL path to image to superpose onto matched region
-	  min  : OPTIONAL minimum N matching features before bounding box drawn (default: 4)
-	  every: OPTIONAL run processing every N frames (default: 1)
+	  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)
+	  every : OPTIONAL run processing every N frames (default: 1)
 
 	Notes:
 
 	The SURF and ORB algorithms can be accompanied with algorithm-specific data;
-	  - for SURF, this is the Hessian tolerance e.g. 'with=SURF:400' (default value: 400')
-	  - for ORB, this is the number of features e.g. 'with=ORB:500' (default value: 500')
+	  - for SURF, this is the Hessian tolerance e.g. 'using=SURF:400' (default value: 400')
+	  - for ORB, this is the number of features e.g. 'using=ORB:500' (default value: 500')
 
 	The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,
 	in=mypic.png:1.5. The default resize value is 1.0 (i.e., no scaling will be performed).
@@ -108,11 +108,11 @@ Running the program again, this time using a printout of a larger region of the 
 
 Example output from the program may look like this:
 
-	(cv) john$ python Example.py find=../Levine/find.500.png with=orb:2000 min=10
+	(cv) john$ python Example.py find=../Levine/find.500.png using=orb:2000 min=10
 	Parameters:
 	  find : ../Levine/find.500.png
 	  in : webcam
-	  with : orb 2000
+	  using : orb 2000
 	  superpose : 
 	  min : 10
 	  every : 1
