@@ -276,7 +276,7 @@ while True:
 
     if resize != 1.0:
         t1 = time.time()
-        img = cv.resize( img, None, resize, resize )
+        img = cv.resize( img, None, fx=resize, fy=resize )
         stats.AddSample(resize_idx, time.time() - t1)
 
     if (useWebcam == False) or (frameNo%processEvery == 0):
