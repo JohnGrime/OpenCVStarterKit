@@ -96,6 +96,12 @@ To compile the C++ example, we need to specify the location of our OpenCV header
 
 We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file should give you the same user guide as the Python script.
 
+An example screenshot of the running program is shown below. In this example, we attempt to recognize a specific region of a wall from the Monte Alban archaeological site (images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)). 
+
+![Figure 1](screenshot.png)
+
+The image passed using the `find` parameter is shown on the left, the current webcam feed is shown on the right, and any recognized region is outlined in blue. Futhermore, we have used the `superpose` parameter to pass in an enhanced trace of the inscription present on the large stone; this trace is thus highlighted in the webcam feed in white.
+
 ## Notes
 
 * The ORB feature detector does not perform well with OpenCV's default number of features (400). I find boosting the ORB feature count gives far better results in most cases (e.g., `with=orb:2000`)
