@@ -304,8 +304,8 @@ int main( int argc, char* argv[] )
     {
         bool haveTransform = false;
 
-        fpsCounter++;
         frameNo++;
+        fpsCounter++;
 
         if (useWebcam)
         {
@@ -382,8 +382,11 @@ int main( int argc, char* argv[] )
             // and homography transform matrix is valid.
             //
 
-            float w = img_ref.cols;
-            float h = img_ref.rows;
+            float cols1 = img_ref.cols;
+            float rows1 = img_ref.rows;
+
+            float cols2 = img.cols;
+            float rows2 = img.rows;
 
             if (haveTransform)
             {
@@ -403,7 +406,7 @@ int main( int argc, char* argv[] )
                 // Draw bounding box
                 //
 
-                srcPoints = { {0,0}, {0,h-1}, {w-1,h-1}, {w-1,0}, {0,0} };
+                srcPoints = { {0,0}, {0,rows1-1}, {cols1-1,rows1-1}, {cols1-1,0}, {0,0} };
                 dstPoints.resize( srcPoints.size() );
 
                 cv::perspectiveTransform( srcPoints, dstPoints, transform );
@@ -428,12 +431,9 @@ int main( int argc, char* argv[] )
             }
             else
             {
-                float w2 = img.cols;
-                float h2 = img.rows;
-
-                img_tmp = cv::Mat::zeros( cv::Size(w+w2,std::max(h,h2)), img.type() );
-                img_ref.copyTo( img_tmp(cv::Rect(0,0,w,h)) );
-                img.copyTo( img_tmp(cv::Rect(w,0,w2,h2)) );
+                img_tmp = cv::Mat::zeros(cv::Size(cols1+cols2,std::max(rows1,rows2)), img.type());
+                img_ref.copyTo( img_tmp(cv::Rect(0,0,cols1,rows1)) );
+                img.copyTo( img_tmp(cv::Rect(cols1,0,cols2,rows2)) );
             }
 
             cv::imshow("Good Matches", img_tmp);
@@ -463,7 +463,7 @@ int main( int argc, char* argv[] )
                 printf( "%s %.2g ms : ", it.first.c_str(), (mean/ticks_per_s) / 1e-3 );
                 tmp += mean;
             }
-            printf( "%d good matches in %dx%d frame (potential %g fps)\n",
+            printf( "%d good matches in %dx%d frame (potential %.2g fps)\n",
                 (int)knn.good_matches.size(), img.cols,img.rows, 1.0/(tmp/ticks_per_s) );
 
             if (haveTransform)
@@ -485,7 +485,7 @@ int main( int argc, char* argv[] )
 
         if (useWebcam)
         {
-            if(cv::waitKey(30) >= 0) break;
+            if(cv::waitKey(10) >= 0) break;
         }
         else
         {

@@ -153,6 +153,9 @@ def loadImage(path, grayscale=True):
 # Off we go ...
 #
 
+print("OpenCV version " + cv.__version__)
+
+
 useGrayscale = False
 FLANN_INDEX_KDTREE, FLANN_INDEX_LSH = 1, 6
 kpd, knn = KeypointsAndDescriptors(), KNNMatcher()
@@ -387,7 +390,7 @@ while True:
         stats.Clear()
 
     if useWebcam == True:
-        if cv.waitKey(30) >= 0: break
+        if cv.waitKey(10) >= 0: break
     else:
         cv.waitKey()
         break
