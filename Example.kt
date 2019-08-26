@@ -357,9 +357,9 @@ object Example {
 				imshow("Good Matches", img_tmp)
 				draw_stats.AddSample( (System.nanoTime()-t1).toDouble() )
 
-        	//
-        	// Print some stats etc every second
-        	//
+			//
+			// Print some stats etc every second
+			//
 
 			val elapsed_ns = System.nanoTime() - start_ns
 			if (elapsed_ns >= 1_000_000_000) {
