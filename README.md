@@ -63,6 +63,8 @@ Included in this repository are two example programs (C++ and Python) with essen
 
 __Please see the note about webcam access for command-line programs in the section `Important note about security`!__
 
+### Python
+
 On the assumption OpenCV built and installed successfully, we may launch the Python example program in the virtual Python environment `cv` that was set up by the build script:
 
 	john$ workon cv
@@ -90,11 +92,24 @@ If all is well, we should see some user guidelines printed:
 	The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,
 	in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed).
 
+### C++
+
 To compile the C++ example, we need to specify the location of our OpenCV headers and which OpenCV libraries we'll be using, e.g.:
 
 	john$ g++ -I/usr/local/include/opencv4 -lopencv_core -lopencv_highgui -lopencv_imgproc -lopencv_imgcodecs -lopencv_videoio -lopencv_calib3d -lopencv_features2d -lopencv_xfeatures2d -std=c++11 -Wall -Wextra -pedantic -O2 Example.cpp
 
 We don't need to use our Python virtual environment (via `workon cv`) to compile and run the C++ example. Running the resultant `a.out` file with no parameters should give you the same user guide as the Python script.
+
+### Kotlin
+
+In progress! If `Ant` was found on your system, or if you enabled the `Ant` installation section of the build script, you should automatically have Java wrappers (which are also usable by Kotlin) in your build directory.
+
+To compile and run the Kotlin example, we need to specify the location of the Java class paths and the native libraries called by the Java wrappers:
+
+	kotlinc -cp ${HOME}/Desktop/OpenCV-4.1.1/opencv-4.1.1/build/bin/opencv-411.jar Example.kt
+	kotlin -cp ${HOME}/Desktop/OpenCV-4.1.1/opencv-4.1.1/build/bin/opencv-411.jar:. -Djava.library.path=${HOME}/Desktop/OpenCV-4.1.1/opencv-4.1.1/build/lib/ Example find=
+
+### Example output
 
 An example screenshot of the running program is shown below. In this example, we attempt to recognize an image of a specific region of a wall from the [Monte Alban](https://montealban.oucreate.com/) archaeological site (all images curtesy of [Dr. Marc Levine](https://samnoblemuseum.ou.edu/staff/marc-levine/)).
 
