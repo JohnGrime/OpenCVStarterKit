@@ -116,7 +116,7 @@ class StatsSet:
 
 def printUsage(progname):
     print()
-    print("Usage : %s find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]" % (progname) )
+    print("Usage : %s find=path [in=path[:scale[:webcamIndex]]] [using=x] [superpose=x] [min=N] [every=N] [gray=yes|no]" % (progname) )
     print()
     print("Where:")
     print()
@@ -126,6 +126,7 @@ def printUsage(progname):
     print("  superpose : OPTIONAL path to image to superpose onto matched region")
     print("  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)")
     print("  every : OPTIONAL run processing every N frames (default: 1)")
+    print("  gray  : OPTIONAL use grayscale images (default: yes)")
     print()
     print("Notes:")
     print()
@@ -135,6 +136,8 @@ def printUsage(progname):
     print()
     print("The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,")
     print("in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed).")
+    print("If webcam use is specified, a further webcam index can be provided as a third parameter,")
+    print("e.g. in=webcam:1.0:0 (default: 0).")
     print()
 
     sys.exit(-1);
@@ -153,10 +156,6 @@ def loadImage(path, grayscale=True):
 # Off we go ...
 #
 
-print("OpenCV version " + cv.__version__)
-
-
-useGrayscale = False
 FLANN_INDEX_KDTREE, FLANN_INDEX_LSH = 1, 6
 kpd, knn = KeypointsAndDescriptors(), KNNMatcher()
 
@@ -168,6 +167,7 @@ params = {
     "superpose": [""],
     "min":       ["4"],
     "every":     ["1"],
+    "gray":      ["yes"],
     }
 
 #
@@ -181,14 +181,21 @@ for s in sys.argv[1:]:
     toks = s.split("=")
     if len(toks)>=2: params[toks[0]] = toks[1].split(":")
 
+print("OpenCV version " + cv.__version__)
 print("Parameters:")
 for key in params:
     print("  %s : %s" % (key, ' '.join(params[key])))
 
-minMatchesForBoundingBox = int(params["min"][0])
 processEvery = int(params["every"][0])
+
 useWebcam = (params["in"][0].lower() == "webcam")
+webcamIndex = 0 if (len(params["in"])<3) else int(params["in"][2])
+
 resize = 1.0 if len(params["in"])<2 else float(params["in"][1])
+
+useGrayscale = (params["gray"][0].lower() == "yes")
+
+minMatchesForBoundingBox = int(params["min"][0])
 
 #
 # Load reference image and superpose image. If latter defined, also resize
@@ -239,18 +246,20 @@ if len(kpd_ref.keypoints) < 4:
     sys.exit(-1)
 
 #
-# Create output window
-#
-
-cv.namedWindow("Good Matches",1)
-
-#
 # Start webcam feed, if specified
 #
 
 if useWebcam:
-    video_capture = cv.VideoCapture(0)
-    if video_capture.isOpened() == False: sys.exit(-1);
+    video_capture = cv.VideoCapture(webcamIndex)
+    if video_capture.isOpened() == False:
+        print("Unable to open webcam", webcamIndex)
+        sys.exit(-1);
+
+#
+# Create output window
+#
+
+cv.namedWindow("Good Matches",1)
 
 #
 # Process data, either from input image or looping over webcam frames

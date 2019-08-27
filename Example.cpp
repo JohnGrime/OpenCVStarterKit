@@ -85,7 +85,7 @@ struct KNNMatcher
 void printUsage( const char* progname )
 {
     cout << endl;
-    cout << "Usage : " << progname << " find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]" << endl;
+    cout << "Usage : " << progname << " find=path [in=path[:scale[:webcamIndex]]] [using=x] [superpose=x] [min=N] [every=N] [gray=yes|no]" << endl;
     cout << endl;
     cout << "Where:" << endl;
     cout << endl;
@@ -95,6 +95,7 @@ void printUsage( const char* progname )
     cout << "  superpose : OPTIONAL path to image to superpose onto matched region" << endl;
     cout << "  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)" << endl;
     cout << "  every : OPTIONAL run processing every N frames (default: 1)" << endl;
+    cout << "  gray  : OPTIONAL use grayscale images (default: yes)" << endl;
     cout << endl;
     cout << "Notes:" << endl;
     cout << endl;
@@ -104,6 +105,8 @@ void printUsage( const char* progname )
     cout << endl;
     cout << "The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5," << endl;
     cout << "in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed)." << endl;
+    cout << "If webcam use is specified, a further webcam index can be provided as a third parameter," << endl;
+    cout << "e.g. in=webcam:1.0:0 (default: 0)." << endl;
     cout << endl;
 
     exit(-1);
@@ -115,7 +118,8 @@ void printUsage( const char* progname )
 
 int main( int argc, char* argv[] )
 {
-    cv::Mat img_ref, img_super;
+    cv::VideoCapture cap;
+    cv::Mat img_ref, img_super, img, img_tmp, transform;
 
     KeypointsAndDescriptors kpd_ref, kpd;
     KNNMatcher knn;
@@ -133,6 +137,7 @@ int main( int argc, char* argv[] )
         { "superpose", {""} },
         { "min",       {"4"} },
         { "every",     {"1"} },
+        { "gray",      {"yes"} },
     };
 
     // Simple lambda to load an image & convert to grayscale if needed
@@ -145,7 +150,7 @@ int main( int argc, char* argv[] )
         if (grayscale) cv::cvtColor(img, img, cv::COLOR_BGR2GRAY);
     };
 
-    bool use_grayscale = false;
+    bool use_grayscale = true;
     int minMatchesForBoundingBox = 0, processEvery = 1;
     double resize = 1.0;
 
@@ -164,6 +169,10 @@ int main( int argc, char* argv[] )
         for (const auto& v : it.second) {cout << v << " ";}
         cout << endl;
     }
+
+    cout << params["gray"][0] << endl;
+
+    if (params["gray"][0]!="yes") use_grayscale = false;
 
     if (!Util::ToNumberIfExists(params["min"],0,minMatchesForBoundingBox))
     {
@@ -265,6 +274,30 @@ int main( int argc, char* argv[] )
     }
 
     //
+    // Process data, either from input image or looping over webcam frames
+    //
+
+    int fpsCounter = 0, frameNo = 0;
+    bool useWebcam = (params["in"][0] == "webcam");
+
+    if (useWebcam)
+    {
+        int webcamIndex = 0;
+        if (!Util::ToNumberIfExists(params["in"],2,webcamIndex))
+        {
+            cout << "Bad webcam index '" << params["in"][2] << "'!" << endl;
+            exit( -1 );
+        }
+
+        cap.open(webcamIndex);
+        if (!cap.isOpened())
+        {
+        	cout << "Unable to open webcam!" << endl;
+        	exit(-1);
+        }
+    }
+
+    //
     // Create an output window
     //
 
@@ -274,30 +307,14 @@ int main( int argc, char* argv[] )
     // Process data, either from input image or looping over webcam frames
     //
 
-    cv::VideoCapture cap;
-    cv::Mat img, img_tmp, transform;
-
     Util::StatsSet stats;
     std::vector<cv::Point2f> srcPoints, dstPoints;
-
-    int fpsCounter = 0, frameNo = 0;
-    bool useWebcam = (params["in"][0] == "webcam");
 
     const int detect_idx = stats.AddName( "detect" );
     const int knn_idx = stats.AddName( "knn" );
     const int homography_idx = stats.AddName( "homography" );
     const int draw_idx = stats.AddName( "draw" );
     const int resize_idx = stats.AddName( "resize" );
-
-    if (useWebcam)
-    {
-        cap.open(0);
-        if (!cap.isOpened())
-        {
-        	cout << "Unable to open webcam!" << endl;
-        	exit(-1);
-        }
-    }
 
     auto start_ticks = cv::getTickCount();
     for(;;)

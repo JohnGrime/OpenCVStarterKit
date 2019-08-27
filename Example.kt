@@ -110,7 +110,7 @@ object Example {
 
 	fun printUsage() {
 		println()
-		println("Usage : Example.kt find=path [in=path] [using=x] [superpose=x] [min=N] [every=N]")
+		println("Usage : Example.kt find=path [in=path[:scale[:webcamIndex]]] [using=x] [superpose=x] [min=N] [every=N] [gray=yes|no]")
 		println()
 		println("Where:")
 		println()
@@ -120,6 +120,7 @@ object Example {
 		println("  superpose : OPTIONAL path to image to superpose onto matched region")
 		println("  min   : OPTIONAL minimum N matching features before bounding box drawn (default: 4)")
 		println("  every : OPTIONAL run processing every N frames (default: 1)")
+		println("  gray  : OPTIONAL use grayscale images (default: yes)")
 		println()
 		println("Notes:")
 		println()
@@ -129,6 +130,8 @@ object Example {
 		println()
 		println("The 'in' parameter can be decorated with a scale value for the data, e.g.: in=webcam:0.5,")
 		println("in=mypic.png:1.5. The default scale value is 1.0 (i.e., no scaling will be performed).")
+		println("If webcam use is specified, a further webcam index can be provided as a third parameter,")
+		println("e.g. in=webcam:1.0:0 (default: 0).")
 		println()
 
 		exitProcess(-1)
@@ -145,17 +148,6 @@ object Example {
 	}
 
 	@JvmStatic fun main(args: Array<String>) {
-		val useGrayscale = true
-
-		var useWebcam = true
-		var resize = 1.0
-
-		val drawMatchesMask = MatOfByte()
-		var img = Mat()
-		var img_tmp = Mat()
-		var img_super = Mat()
-		var transform = Mat()
-
 		val kpd = KeypointsAndDescriptors()
 		val kpd_ref = KeypointsAndDescriptors()
 		val knn = KNNMatcher()
@@ -165,7 +157,17 @@ object Example {
 
 		val webcam = VideoCapture()
 
-		println("OpenCV version " + VERSION)
+		var useGrayscale = true
+		var useWebcam = true
+		var webcamIndex = 0
+		var resize = 1.0
+
+		val drawMatchesMask = MatOfByte()
+		var img = Mat()
+		var img_tmp = Mat()
+		var img_super = Mat()
+		var transform = Mat()
+
 		if (args.size < 1) printUsage()
 
 		val params = mutableMapOf(
@@ -174,7 +176,8 @@ object Example {
 			"using"     to listOf("SIFT"),
 			"superpose" to listOf(""),
 			"min"       to listOf("4"),
-			"every"     to listOf("1")
+			"every"     to listOf("1"),
+			"gray"      to listOf("yes")
 			)
 
 		for (p in args) {
@@ -183,6 +186,7 @@ object Example {
 			params.put(toks[0], toks[1].split(":"))
 		}
 
+		println("OpenCV version " + VERSION)
 		println( "Parameters:" )
 		for (p in params) {
 			println("  ${p.key} : ${p.value}")
@@ -218,6 +222,15 @@ object Example {
 		info = params.get("every")!!
 		val processEvery = info[0].toInt()
 
+		info = params.get("superpose")!!
+		if (info[0] != "") {
+			img_super = loadImage(info[0], useGrayscale)
+			resize(img_super, img_super, img_ref.size())
+		}
+
+		info = params.get("gray")!!
+		if (info[0] != "yes") useGrayscale = false
+
 		info = params.get("in")!!
 		if (info[0] != "webcam") {
 			val test = "${info[0]}"
@@ -226,24 +239,19 @@ object Example {
 			useWebcam = false
 		}
 		if (info.size>1) resize = info[1].toDouble()
-
-		info = params.get("superpose")!!
-		if (info[0] != "") {
-			img_super = loadImage(info[0], useGrayscale)
-			resize(img_super, img_super, img_ref.size())
-		}
-
-		kpd_ref.DetectAndCompute(img_ref, detector)
-
-		namedWindow("Good Matches",1)
+		if (info.size>2) webcamIndex = info[2].toInt()
 
 		if (useWebcam) {
-			webcam.open(0)
+			webcam.open(webcamIndex)
 			if (!webcam.isOpened()) {
 				println("Unable to open webcam")
 				exitProcess(-1)
 			}
 		}
+
+		kpd_ref.DetectAndCompute(img_ref, detector)
+
+		namedWindow("Good Matches",1)
 
 		var resize_stats = Stats()
 		var detect_stats = Stats()
